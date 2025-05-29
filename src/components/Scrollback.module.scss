@@ -1,0 +1,62 @@
+// Shared styles for any container with log messages
+.log {
+  background-color: black;
+  color: #ecf0f1;
+  padding: 0.5rem 1rem;
+
+  // Make lines closer together
+  line-height: 1.2;
+}
+
+// Line container
+.line {
+  min-height: 1.2em;
+
+  // Style messages
+  span {
+    white-space: pre-wrap;
+    font-family: monospace;
+  }
+}
+
+// Scrollback wrapper to contain main log and mini pane
+.scrollbackWrapper {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+// Scrollable viewport for the main log
+.logViewport {
+  min-height: 0;
+  flex: 1; /* Take up all available space */
+  overflow-y: scroll; /* Enable scrolling */
+  overflow-x: hidden;
+  scrollbar-gutter: stable; /* Reserve space for scrollbar */
+}
+
+// Mini pane that appears at bottom when scrolled up
+.miniPane {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 15px; // Leave space for scrollbar
+  max-height: 200px;
+  min-height: 3rem;
+  height: 25%;
+  border-top: 2px solid #444;
+  overflow: hidden;
+  box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.5);
+
+  // Override log background to be semi-transparent
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+.miniPaneInner {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}

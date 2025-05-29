@@ -1,0 +1,12 @@
+.serverNavBar {
+  background-color: var(--bs-dark-bg-subtle);
+  border-top: 1px solid var(--bs-border-color-translucent);
+  border-left: 1px solid var(--bs-border-color-translucent) !important;
+  border-right: 1px solid var(--bs-border-color-translucent) !important;
+}
+
+.inputArea {
+  flex-shrink: 0; /* Don't shrink */
+  padding: 0.5rem 0rem;
+  border-top: 1px solid #dee2e6;
+}

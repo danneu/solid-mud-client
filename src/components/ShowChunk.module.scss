@@ -1,0 +1,142 @@
+/* Text styling */
+.dim {
+  opacity: 0.75;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+.underline {
+  text-decoration: underline;
+}
+
+.italic {
+  font-style: italic;
+}
+
+.strikethrough {
+  text-decoration: line-through;
+}
+
+/* Foreground colors */
+.fgBlack {
+  color: var(--black);
+}
+
+.fgBrightBlack {
+  color: var(--black-bright);
+}
+
+.fgRed {
+  color: var(--red);
+}
+
+.fgBrightRed {
+  color: var(--red-bright);
+}
+
+.fgGreen {
+  color: var(--green);
+}
+
+.fgBrightGreen {
+  color: var(--green-bright);
+}
+
+.fgYellow {
+  color: var(--yellow);
+}
+
+.fgBrightYellow {
+  color: var(--yellow-bright);
+}
+
+.fgBlue {
+  color: var(--blue);
+}
+
+.fgBrightBlue {
+  color: var(--blue-bright);
+}
+
+.fgMagenta {
+  color: var(--magenta);
+}
+
+.fgBrightMagenta {
+  color: var(--magenta-bright);
+}
+
+.fgCyan {
+  color: var(--cyan);
+}
+
+.fgBrightCyan {
+  color: var(--cyan-bright);
+}
+
+.fgWhite {
+  color: var(--white);
+}
+
+.fgBrightWhite {
+  color: var(--white-bright);
+}
+
+/* Background colors */
+
+// Black background is just transparent
+// .bgBlack {
+//   background-color: var(--black);
+// }
+// .bgBrightBlack {
+//   background-color: var(--bright-black);
+// }
+
+.bgRed {
+  background-color: var(--red);
+}
+.bgBrightRed {
+  background-color: var(--red-bright);
+}
+
+.bgGreen {
+  background-color: var(--green);
+}
+.bgBrightGreen {
+  background-color: var(--green-bright);
+}
+
+.bgYellow {
+  background-color: var(--yellow);
+}
+.bgBrightYellow {
+  background-color: var(--yellow-bright);
+}
+
+.bgBlue {
+  background-color: var(--blue);
+}
+.bgBrightBlue {
+  background-color: var(--blue-bright);
+}
+
+.bgMagenta {
+  background-color: var(--magenta);
+}
+.bgCyan {
+  background-color: var(--cyan);
+}
+.bgBrightCyan {
+  background-color: var(--cyan-bright);
+}
+.bgBrightMagenta {
+  background-color: var(--magenta-bright);
+}
+.bgWhite {
+  background-color: var(--white);
+}
+.bgBrightWhite {
+  background-color: var(--white-bright);
+}
