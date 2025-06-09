@@ -10,6 +10,9 @@
 //   find a file at ~icons/bi/gear. This declaration tells TypeScript
 //   "trust me, imports matching this pattern will return a SolidJS
 //   component" so it stops complaining and provides proper type checking.
+
+// Note: Reexport icons we'll use in util/icons.ts
+
 declare module "~icons/*" {
   import type { Component } from "solid-js";
   const component: Component<{ class?: string }>;

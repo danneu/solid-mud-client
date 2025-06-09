@@ -3,7 +3,7 @@ import { Index, Match, Show, Switch } from "solid-js";
 import { useStore } from "../store";
 import { Button, ListGroup, Spinner } from "solid-bootstrap";
 import { useConnectionManager } from "../services/connection-manager";
-import IconGear from "~icons/bi/gear";
+import { IconGear } from "../util/icons";
 
 export const Sidebar: Component = () => {
   const store = useStore();

@@ -1,6 +1,7 @@
 // This sidebar slides out from the right side of the screen
 
 import {
+  Alert,
   Button,
   ButtonGroup,
   Form,
@@ -37,7 +38,9 @@ const SlidePanel: Component<{ server: Server; show: boolean }> = (props) => {
         <Offcanvas.Title>Slide Panel</Offcanvas.Title>
       </Offcanvas.Header>
       <Offcanvas.Body>
-        <h2>Filter mode</h2>
+        <Alert variant="info">Not sure which things to put here yet.</Alert>
+
+        <h4>Filter mode</h4>
         <ButtonGroup class="w-100">
           <Index each={["off", "include", "exclude"] as FilterMode[]}>
             {(mode) => (

@@ -10,7 +10,7 @@ import { DebugModal } from "./components/DebugModal";
 import { AppErrorBoundary } from "./components/ErrorBoundary";
 import { GlobalConfigModal } from "./modal-pages/GlobalConfigModal";
 import SlidePanel from "./components/SlidePanel";
-import IconGear from "~icons/bi/gear";
+import { IconGear, IconGithub } from "./util/icons";
 
 const LazyServerConfigModal = lazy(
   () => import("./modal-pages/ServerConfigModal"),
@@ -107,9 +107,10 @@ function App() {
               Proxy URL: <code>{state.proxy}</code>
             </Navbar.Text>
 
-            <Navbar.Text>
+            <Navbar.Text class="d-flex align-items-center">
               <Button
                 variant="link"
+                class="text-muted"
                 size="sm"
                 onClick={() =>
                   dispatch({ type: "set-modal", modal: { type: "config" } })
@@ -118,18 +119,14 @@ function App() {
                 <IconGear />
               </Button>
 
-              <Button
-                size="sm"
-                variant="outline-secondary"
-                onClick={() =>
-                  dispatch({
-                    type: "set-modal",
-                    modal: { type: "debug" },
-                  })
-                }
+              <a
+                href="https://github.com/danneu/solid-mud-client"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="GitHub"
               >
-                Debug
-              </Button>
+                <IconGithub width="1.2rem" class="text-muted" />
+              </a>
             </Navbar.Text>
           </Container>
         </Navbar>

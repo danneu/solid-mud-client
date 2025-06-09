@@ -3,6 +3,7 @@ import solid from "vite-plugin-solid";
 // import { visualizer } from "rollup-plugin-visualizer";
 import Icons from "unplugin-icons/vite";
 import sassDts from "vite-plugin-sass-dts";
+import solidSvg from "vite-plugin-solid-svg";
 
 export default defineConfig({
   base: "/solid-mud-client/",
@@ -12,6 +13,7 @@ export default defineConfig({
       compiler: "solid",
       autoInstall: true,
     }),
+    solidSvg(),
     sassDts(),
     // visualizer({
     //   template: "treemap",
