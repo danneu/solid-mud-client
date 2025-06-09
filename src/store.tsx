@@ -100,6 +100,7 @@ export type State = {
   route: Route;
   proxy: string;
   servers: Server[];
+  showServerSelector: boolean;
 };
 
 function createState(): State {
@@ -131,6 +132,7 @@ function createState(): State {
     route: { type: "server", id: servers[0].id },
     proxy,
     servers,
+    showServerSelector: true,
   };
 }
 
@@ -318,6 +320,10 @@ function update(state: State, msg: Msg): void {
       }
       break;
     }
+    case "show-server-selector": {
+      state.showServerSelector = msg.show;
+      break;
+    }
     default: {
       const _exhaustive: never = msg;
       throw new Error(`Unknown message type: ${_exhaustive}`);
@@ -410,6 +416,10 @@ export type Msg =
   | {
       type: "server-delete";
       serverId: Server["id"];
+    }
+  | {
+      type: "show-server-selector";
+      show: boolean;
     };
 
 export type Store = ReturnType<typeof createStore>;

@@ -3,7 +3,7 @@ import "./App.scss";
 import { useStore } from "./store";
 import { Button, Container, Navbar, Offcanvas } from "solid-bootstrap";
 import { Sidebar } from "./components/Sidebar";
-import { createSignal, For, lazy, Match, Show, Switch } from "solid-js";
+import { For, lazy, Match, Show, Switch } from "solid-js";
 import { HomePage } from "./components/HomePage";
 import { ServerPage } from "./components/ServerPage";
 import { DebugModal } from "./components/DebugModal";
@@ -24,7 +24,6 @@ const LazyNewServerModal = lazy(() => import("./modal-pages/NewServerModal"));
 
 function App() {
   const { state, dispatch } = useStore();
-  const [showSidebar, setShowSidebar] = createSignal(false);
 
   const currentServer = () => {
     if (state.route.type !== "server") return null;
@@ -37,8 +36,8 @@ function App() {
       {/* For some reason, this needs to come before the modal switch section below */}
       <Offcanvas
         style={{ transition: "none" }}
-        show={showSidebar()}
-        onHide={() => setShowSidebar(false)}
+        show={state.showServerSelector}
+        onHide={() => dispatch({ type: "show-server-selector", show: false })}
         placement="start"
       >
         <Offcanvas.Header closeButton>
@@ -97,7 +96,7 @@ function App() {
             <Button
               variant="outline-primary"
               size="sm"
-              onClick={() => setShowSidebar(true)}
+              onClick={() => dispatch({ type: "show-server-selector", show: true })}
               class="me-2"
             >
               ☰ Servers
