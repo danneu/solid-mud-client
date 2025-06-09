@@ -1,8 +1,9 @@
 import type { Component } from "solid-js";
-import { Form, Modal } from "solid-bootstrap";
+import { Button, Form, Modal } from "solid-bootstrap";
 import { useStore } from "../store";
-import { createSignal } from "solid-js";
+import { createSignal, Show } from "solid-js";
 import { z } from "zod/v4-mini";
+import { PRODUCTION_PROXY_URL } from "../config";
 
 const ProxyUrlSchema = z.string().check(
   z.url(),
@@ -37,8 +38,27 @@ export const GlobalConfigModal: Component = () => {
       </Modal.Header>
       <Modal.Body>
         <Form>
-          <Form.Group class="mb-3">
-            <Form.Label>Telnet Proxy URL</Form.Label>
+          <Form.Group>
+            <div class="d-flex align-items-center justify-content-between">
+              <Form.Label>Telnet Proxy URL</Form.Label>
+              <Show when={state.proxy !== PRODUCTION_PROXY_URL}>
+                <Button
+                  variant="link"
+                  size="sm"
+                  onClick={() => {
+                    setDraft(PRODUCTION_PROXY_URL);
+                    setProxyUrlError(null);
+                    dispatch({
+                      type: "set-proxy-url",
+                      url: PRODUCTION_PROXY_URL,
+                    });
+                  }}
+                  disabled={draft() === PRODUCTION_PROXY_URL}
+                >
+                  Default
+                </Button>
+              </Show>
+            </div>
             <Form.Control
               type="text"
               placeholder="ws://localhost:8888"

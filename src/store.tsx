@@ -11,6 +11,7 @@ import {
 import { LocalStorage } from "./util/LocalStorage";
 import type { ConnectionOptions } from "telnet-proxy";
 import type { StyledText } from "ansi-stream-parser";
+import { PRODUCTION_PROXY_URL } from "./config";
 
 // Maximum number of lines to keep in memory per server
 const MAX_LINES = 10_000;
@@ -119,9 +120,10 @@ function createState(): State {
     createServer("Threshold RPG", "thresholdrpg.com", 3333),
   ];
 
-  // Load proxy URL from localStorage, fallback to default
+  // Load proxy URL from localStorage, fallback to environment variable
   const savedProxyUrl = LocalStorage.load("mud:proxy-url");
-  const proxy = savedProxyUrl || "ws://localhost:8888";
+  const proxy =
+    savedProxyUrl || import.meta.env.VITE_PROXY_URL || PRODUCTION_PROXY_URL;
 
   return {
     modal: null,
