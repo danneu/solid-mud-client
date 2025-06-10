@@ -246,23 +246,16 @@ function createConnectionManager(store: Store) {
         }
         case "error": {
           console.error("error from telnet-proxy:", message.error);
-          batch(() => {
-            store.dispatch({
-              type: "server:new-line",
-              serverId,
-            });
-            store.dispatch({
-              type: "server:append-chunk",
-              serverId,
-              chunk: {
+          store.dispatch({
+            type: "server:new-line",
+            serverId,
+            terminateLine: true,
+            chunks: [
+              {
                 text: `[telnet-proxy] error: ${message.error}`,
                 fg: { type: "16", code: Color16.red },
               },
-            });
-            store.dispatch({
-              type: "server:new-line",
-              serverId,
-            });
+            ],
           });
           break;
         }

@@ -211,7 +211,13 @@ function update(state: State, msg: Msg): void {
     }
     case "server:new-line": {
       updateServer(msg.serverId, (server) => {
-        ringPush(server.lines, []);
+        const chunks = msg.chunks || [];
+        ringPush(server.lines, chunks);
+        
+        // If terminateLine is true, append an empty line after
+        if (msg.terminateLine) {
+          ringPush(server.lines, []);
+        }
       });
       break;
     }
@@ -355,6 +361,8 @@ export type Msg =
   | {
       type: "server:new-line";
       serverId: Server["id"];
+      chunks?: StyledText[];
+      terminateLine?: boolean;
     }
   | {
       type: "server-append-lines";

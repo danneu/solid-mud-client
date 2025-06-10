@@ -57,7 +57,7 @@ export const ServerPage: Component<{ server: Server; visible: boolean }> = (
           // If mini pane is visible → don't auto-scroll, user can see new messages there
           // If no mini pane (user at bottom) → auto-scroll to keep them at bottom
           const shouldAutoScroll = wasNearBottom(); // only auto-scroll if at bottom (no mini pane)
-          
+
           if (shouldAutoScroll) {
             setTimeout(() => {
               if (scrollContainer) {
@@ -103,23 +103,16 @@ export const ServerPage: Component<{ server: Server; visible: boolean }> = (
           status === "disconnected" // this also applies on server initializing as disconnected
           //&& ringLength(props.server.lines) > 0
         ) {
-          batch(() => {
-            dispatch({
-              type: "server:new-line",
-              serverId: props.server.id,
-            });
-            dispatch({
-              type: "server:append-chunk",
-              serverId: props.server.id,
-              chunk: {
+          dispatch({
+            type: "server:new-line",
+            serverId: props.server.id,
+            terminateLine: true,
+            chunks: [
+              {
                 text: "Disconnected",
                 fg: { type: "16", code: Color16.red },
               },
-            });
-            dispatch({
-              type: "server:new-line",
-              serverId: props.server.id,
-            });
+            ],
           });
         }
       },
@@ -131,35 +124,50 @@ export const ServerPage: Component<{ server: Server; visible: boolean }> = (
     const currentDraft = draft();
     console.log("submit", currentDraft);
 
-    // Add user message to chunks
-    sendMessage(props.server.id, currentDraft);
+    // Only send message if connected
+    if (props.server.status === "connected") {
+      sendMessage(props.server.id, currentDraft);
 
-    batch(() => {
+      batch(() => {
+        dispatch({
+          type: "server:new-line",
+          serverId: props.server.id,
+          terminateLine: true,
+          chunks: [
+            {
+              text: "> " + currentDraft,
+              fg: { type: "16", code: Color16.cyan },
+            },
+          ],
+        });
+        dispatch({
+          type: "server-push-command-history",
+          serverId: props.server.id,
+          command: currentDraft,
+        });
+        resetHistory();
+      });
+    } else {
+      // on any other server state, don't submit the message and tell the user to connect
       dispatch({
         type: "server:new-line",
         serverId: props.server.id,
+        terminateLine: true,
+        chunks: [
+          {
+            text: "Message not sent. Connecting...",
+            fg: { type: "16", code: Color16.yellow },
+          },
+        ],
       });
-      dispatch({
-        type: "server:append-chunk",
-        serverId: props.server.id,
-        chunk: {
-          text: "> " + currentDraft,
-          fg: { type: "16", code: Color16.cyan },
-        },
-      });
-      dispatch({
-        type: "server:new-line",
-        serverId: props.server.id,
-      });
-      dispatch({
-        type: "server-push-command-history",
-        serverId: props.server.id,
-        command: currentDraft,
-      });
-      resetHistory();
-      // Don't clear draft, just select it
-    });
 
+      // Start connecting if disconnected, otherwise it must be reconnecting
+      if (props.server.status === "disconnected") {
+        connect(props.server);
+      }
+    }
+
+    // Don't clear draft, just select it
     inputRef?.select();
 
     // Only scroll to bottom if mini pane is not visible (user is already at bottom)
@@ -280,29 +288,22 @@ export const ServerPage: Component<{ server: Server; visible: boolean }> = (
         onScroll={updateScrollState}
       />
       <div class={styles.inputArea}>
-        <Switch>
-          <Match when={props.server.status === "disconnected"}>
-            <Button onClick={[connect, props.server]}>Connect</Button>
-          </Match>
-          <Match when={true}>
-            <Form onSubmit={handleSubmit}>
-              <Form.Control
-                type="text"
-                placeholder="Write a command and press enter"
-                ref={inputRef}
-                value={draft()}
-                // on uparrow
-                onKeyDown={handleInputKeyDown}
-                onInput={handleInput}
-              />
-              <div class="alias-match">
-                <Badge bg={aliasMatch() ? "success" : "secondary"}>
-                  Alias: {aliasMatch() ? "Yes" : "No"}
-                </Badge>
-              </div>
-            </Form>
-          </Match>
-        </Switch>
+        <Form onSubmit={handleSubmit}>
+          <Form.Control
+            type="text"
+            placeholder="Write a command and press enter"
+            ref={inputRef}
+            value={draft()}
+            // on uparrow
+            onKeyDown={handleInputKeyDown}
+            onInput={handleInput}
+          />
+          <div class="alias-match">
+            <Badge bg={aliasMatch() ? "success" : "secondary"}>
+              Alias: {aliasMatch() ? "Yes" : "No"}
+            </Badge>
+          </div>
+        </Form>
       </div>
     </div>
   );
