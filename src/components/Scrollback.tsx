@@ -71,27 +71,27 @@ export const Scrollback: Component<ScrollbackProps> = (props) => {
 
     const filterMode = props.server.filterMode;
 
-    const linesArray = ringToArray(props.server.lines);
+    const lines = ringToArray(props.server.lines);
 
     if (filterMode === "off") {
-      return linesArray;
+      return lines;
     }
 
-    return linesArray.filter((chunks) => {
-      const line = chunks
-        .map((chunk) => chunk.text)
-        .join("")
+    return lines.filter((line) => {
+      const text = line.chunks
+        .reduce((acc, chunk) => acc + chunk.text, "")
+        // trim is important so that it's easier to use ^ and $ in regex filters
         .trim();
 
       switch (filterMode) {
         case "include": {
           const includeRegex = lineIncludeRegex();
-          if (includeRegex && !includeRegex.test(line)) return false;
+          if (includeRegex && !includeRegex.test(text)) return false;
           break;
         }
         case "exclude": {
           const excludeRegex = lineExcludeRegex();
-          if (excludeRegex && excludeRegex.test(line)) return false;
+          if (excludeRegex && excludeRegex.test(text)) return false;
           break;
         }
         default: {
@@ -139,9 +139,34 @@ export const Scrollback: Component<ScrollbackProps> = (props) => {
   // Get the last N lines for mini pane
   const getRecentLines = () => {
     const allLines = filteredLines();
-    // Show last N lines in mini pane
     const linesToShow = 20;
     return allLines.slice(-linesToShow);
+  };
+
+  // Untested
+  const handleTouchStart = (e: TouchEvent) => {
+    const touch = e.touches[0];
+    let startY = touch.clientY;
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (scrollContainer) {
+        const touch = e.touches[0];
+        const deltaY = startY - touch.clientY;
+        scrollContainer.scrollTop += deltaY;
+        startY = touch.clientY;
+        e.preventDefault();
+      }
+    };
+
+    const handleTouchEnd = () => {
+      document.removeEventListener("touchmove", handleTouchMove);
+      document.removeEventListener("touchend", handleTouchEnd);
+    };
+
+    document.addEventListener("touchmove", handleTouchMove, {
+      passive: false,
+    });
+    document.addEventListener("touchend", handleTouchEnd);
   };
 
   return (
@@ -157,7 +182,7 @@ export const Scrollback: Component<ScrollbackProps> = (props) => {
         <For each={filteredLines()}>
           {(line) => (
             <div class={styles.line}>
-              <Index each={line}>
+              <Index each={line.chunks}>
                 {(chunk) => <ShowChunk chunk={chunk()} />}
               </Index>
             </div>
@@ -168,6 +193,7 @@ export const Scrollback: Component<ScrollbackProps> = (props) => {
       <div
         class={`${styles.miniPane}`}
         style={{
+          // mini pane is always mounted, just hidden
           display: showMiniPane() ? "block" : "none",
         }}
         onWheel={(e) => {
@@ -177,36 +203,13 @@ export const Scrollback: Component<ScrollbackProps> = (props) => {
             e.preventDefault();
           }
         }}
-        onTouchStart={(e) => {
-          const touch = e.touches[0];
-          let startY = touch.clientY;
-
-          const handleTouchMove = (e: TouchEvent) => {
-            if (scrollContainer) {
-              const touch = e.touches[0];
-              const deltaY = startY - touch.clientY;
-              scrollContainer.scrollTop += deltaY;
-              startY = touch.clientY;
-              e.preventDefault();
-            }
-          };
-
-          const handleTouchEnd = () => {
-            document.removeEventListener("touchmove", handleTouchMove);
-            document.removeEventListener("touchend", handleTouchEnd);
-          };
-
-          document.addEventListener("touchmove", handleTouchMove, {
-            passive: false,
-          });
-          document.addEventListener("touchend", handleTouchEnd);
-        }}
+        onTouchStart={handleTouchStart}
       >
         <div class={`${styles.log} ${styles.miniPaneInner}`}>
           <For each={getRecentLines()}>
             {(line) => (
               <div class={styles.line}>
-                <Index each={line}>
+                <Index each={line.chunks}>
                   {(chunk) => <ShowChunk chunk={chunk()} />}
                 </Index>
               </div>

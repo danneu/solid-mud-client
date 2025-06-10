@@ -11,10 +11,9 @@ import {
 import { LocalStorage } from "./util/LocalStorage";
 import type { ConnectionOptions } from "telnet-proxy";
 import type { StyledText } from "ansi-stream-parser";
-import { PRODUCTION_PROXY_URL } from "./config";
+import { PRODUCTION_PROXY_URL, SCROLLBACK_LENGTH } from "./config";
 
 // Maximum number of lines to keep in memory per server
-const MAX_LINES = 10_000;
 
 export type ConnectionState = "disconnected" | "connecting" | "connected";
 
@@ -25,6 +24,10 @@ export type ServerConfig = {
 
 export type FilterMode = "off" | "include" | "exclude";
 
+export type Line = {
+  chunks: StyledText[];
+};
+
 export type Server = {
   id: string;
   status: ConnectionState;
@@ -34,7 +37,7 @@ export type Server = {
   encoding: ConnectionOptions["encoding"];
   commandHistory: string[];
   config: ServerConfig;
-  lines: RingBuffer<StyledText[]>;
+  lines: RingBuffer<Line>;
   // Regexes to filter lines, will be passed in to new RegExp
   showSlidePanel: boolean;
   filterMode: FilterMode;
@@ -74,7 +77,7 @@ function createServer(
     encoding,
     commandHistory: [],
     config: parseServerConfig(defaultConfig)!,
-    lines: createRingBuffer<StyledText[]>(MAX_LINES),
+    lines: createRingBuffer<Line>(SCROLLBACK_LENGTH),
     showSlidePanel: false,
     filterMode: "include",
     lineFiltersInclude: [""],
@@ -181,7 +184,8 @@ function update(state: State, msg: Msg): void {
     }
     case "server-append-lines": {
       updateServer(msg.serverId, (server) => {
-        ringPush(server.lines, ...msg.lines);
+        const lines = msg.lines.map((chunks) => ({ chunks }));
+        ringPush(server.lines, ...lines);
       });
       break;
     }
@@ -200,11 +204,11 @@ function update(state: State, msg: Msg): void {
     case "server:append-chunk": {
       updateServer(msg.serverId, (server) => {
         if (ringIsEmpty(server.lines)) {
-          ringPush(server.lines, []);
+          ringPush(server.lines, { chunks: [] });
         }
         const lastLine = ringPeekLast(server.lines);
         if (lastLine) {
-          lastLine.push(msg.chunk);
+          lastLine.chunks.push(msg.chunk);
         }
       });
       break;
@@ -212,11 +216,11 @@ function update(state: State, msg: Msg): void {
     case "server:new-line": {
       updateServer(msg.serverId, (server) => {
         const chunks = msg.chunks || [];
-        ringPush(server.lines, chunks);
-        
+        ringPush(server.lines, { chunks });
+
         // If terminateLine is true, append an empty line after
         if (msg.terminateLine) {
-          ringPush(server.lines, []);
+          ringPush(server.lines, { chunks: [] });
         }
       });
       break;

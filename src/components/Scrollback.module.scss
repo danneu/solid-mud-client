@@ -50,6 +50,9 @@
   overflow: hidden;
   box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.5);
 
+  // helps communicate that the minipane is present
+  opacity: 0.8;
+
   // Override log background to be semi-transparent
   background-color: rgba(0, 0, 0, 0.8);
 }

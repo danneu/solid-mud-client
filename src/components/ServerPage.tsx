@@ -298,6 +298,7 @@ export const ServerPage: Component<{ server: Server; visible: boolean }> = (
             onKeyDown={handleInputKeyDown}
             onInput={handleInput}
           />
+
           <div class="alias-match">
             <Badge bg={aliasMatch() ? "success" : "secondary"}>
               Alias: {aliasMatch() ? "Yes" : "No"}
