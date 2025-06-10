@@ -76,39 +76,40 @@ export const ServerPage: Component<{ server: Server; visible: boolean }> = (
 
   const aliasMatcher = createMemo(
     on(
-      () => props.server.config.aliases,
-      () => {
-        // Whenever config changes, recompile the matcher
-        console.log("recompiling alias matcher");
-        return AliasMatcher.compile(props.server.config.aliases);
+      // When visible + whenever config changes, recompile the matcher
+      [() => props.server.config.aliases, () => props.visible],
+      ([, visible]) => {
+        if (visible) {
+          console.log("recompiling alias matcher", props.server.name);
+          return AliasMatcher.compile(props.server.config.aliases);
+        } else {
+          return null;
+        }
       },
     ),
   );
 
   const aliasMatch: Accessor<AliasMatch | null> = createMemo(
-    on(
-      () => draft(),
-      () => {
-        // Every time draft changes, check if it matches an alias
-        const currentDraft = draft();
-        if (currentDraft.trim().length === 0) {
-          return null;
-        }
+    on([() => draft(), () => aliasMatcher()], ([draft, aliasMatcher]) => {
+      if (!aliasMatcher) {
+        // aliasMatcher not yet compiled (e.g. page hasn't been visible yet)
+        return null;
+      }
+      // Every time draft changes, check if it matches an alias
+      if (draft.trim().length === 0) {
+        return null;
+      }
 
-        const match = aliasMatcher()?.match(currentDraft);
-        console.log("checking mach", match);
-        return match;
-      },
-    ),
+      const match = aliasMatcher.match(draft);
+      console.log("checking match", match);
+      return match;
+    }),
   );
 
   createEffect(
     on(
       () => props.server.status,
       (status) => {
-        console.log(
-          `[ServerPage] ${props.server.id} createEffect status: ${status}`,
-        );
         // on transition to disconnected, print a message
         if (
           status === "disconnected" // this also applies on server initializing as disconnected

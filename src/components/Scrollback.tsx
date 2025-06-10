@@ -113,12 +113,12 @@ export const Scrollback: Component<ScrollbackProps> = (props) => {
         () => lineExcludeRegex(),
       ],
       () => {
-        console.log(
-          "filters changed. should be scrolling to bottom...",
-          props.server.lineFiltersInclude,
-          props.server.lineFiltersExclude,
-        );
         if (props.visible) {
+          console.log(
+            "filters changed. should be scrolling to bottom...",
+            props.server.lineFiltersInclude,
+            props.server.lineFiltersExclude,
+          );
           scrollToBottom(scrollContainer!, "always");
         }
       },
