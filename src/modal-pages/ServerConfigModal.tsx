@@ -1,5 +1,5 @@
 import { Button, Modal } from "solid-bootstrap";
-import { useStore } from "../store";
+import { useStore } from "../model";
 import { batch, type Component } from "solid-js";
 import { ServerForm, type ServerFormValues } from "../components/ServerForm";
 

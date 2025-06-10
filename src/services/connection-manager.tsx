@@ -6,7 +6,8 @@ import {
   useContext,
   type JSX,
 } from "solid-js";
-import { type Store, type Server, useStore } from "../store";
+import { type Store, useStore } from "../model";
+import { type Server } from "../model/types";
 import EventEmitter from "eventemitter3";
 import { z } from "zod";
 import {

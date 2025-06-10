@@ -9,7 +9,9 @@ import {
   ToggleButton,
 } from "solid-bootstrap";
 import { Index, Match, onMount, Switch, type Component } from "solid-js";
-import { useStore, type FilterMode, type Server } from "../store";
+import { useStore } from "../model";
+import { type Server } from "../model/types";
+import { type FilterMode } from "../model/types";
 
 const SlidePanel: Component<{ server: Server; show: boolean }> = (props) => {
   const { dispatch } = useStore();

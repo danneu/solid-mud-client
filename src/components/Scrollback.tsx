@@ -10,7 +10,7 @@ import {
   createSignal,
 } from "solid-js";
 import { ShowChunk } from "./ShowChunk";
-import { type Server } from "../store";
+import { type Server } from "../model/types";
 import { toArray as ringToArray } from "../util/RingBuffer";
 import { scrollToBottom } from "../util/scrollToBottom";
 import styles from "./Scrollback.module.scss";

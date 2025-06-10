@@ -1,5 +1,5 @@
 import { Alert, Button, Modal } from "solid-bootstrap";
-import { useStore } from "../store";
+import { useStore } from "../model";
 import {
   batch,
   createSignal,

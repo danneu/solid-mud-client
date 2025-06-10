@@ -1,6 +1,6 @@
 import type { Component } from "solid-js";
 import { Button, Form, Modal } from "solid-bootstrap";
-import { useStore } from "../store";
+import { useStore } from "../model";
 import { createSignal, Show } from "solid-js";
 import { z } from "zod/v4-mini";
 import { PRODUCTION_PROXY_URL } from "../config";

@@ -1,7 +1,7 @@
 import { Form } from "solid-bootstrap";
 import { createSignal, Index, type Component } from "solid-js";
 import type { ConnectionOptions } from "telnet-proxy";
-import type { Server } from "../store";
+import type { Server } from "../model/types";
 
 export type ServerFormValues = {
   name: Server["name"];

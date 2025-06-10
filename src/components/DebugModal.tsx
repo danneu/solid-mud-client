@@ -1,5 +1,5 @@
 import { Modal } from "solid-bootstrap";
-import { useStore } from "../store";
+import { useStore } from "../model";
 import type { Component } from "solid-js";
 
 export const DebugModal: Component = () => {

@@ -1,6 +1,6 @@
 import type { Component } from "solid-js";
 import { Index, Match, Show, Switch } from "solid-js";
-import { useStore } from "../store";
+import { useStore } from "../model";
 import { Button, ListGroup, Spinner } from "solid-bootstrap";
 import { useConnectionManager } from "../services/connection-manager";
 import { IconGear } from "../util/icons";

@@ -9,7 +9,8 @@ import {
   batch,
   createMemo,
 } from "solid-js";
-import { useStore, type Server } from "../store";
+import { useStore } from "../model";
+import { type Server } from "../model/types";
 import { Badge, Button, Container, Form, Nav, Navbar } from "solid-bootstrap";
 import { useConnectionManager } from "../services/connection-manager";
 import { useCommandHistory } from "../hooks/useCommandHistory";
@@ -73,23 +74,33 @@ export const ServerPage: Component<{ server: Server; visible: boolean }> = (
     ),
   );
 
-  const aliasMatcher = createMemo(() => {
-    // Whenever config changes, recompile the matcher
-    console.log("recompiling alias matcher");
-    return AliasMatcher.compile(props.server.config.aliases);
-  });
+  const aliasMatcher = createMemo(
+    on(
+      () => props.server.config.aliases,
+      () => {
+        // Whenever config changes, recompile the matcher
+        console.log("recompiling alias matcher");
+        return AliasMatcher.compile(props.server.config.aliases);
+      },
+    ),
+  );
 
-  const aliasMatch: Accessor<AliasMatch | null> = createMemo(() => {
-    // Every time draft changes, check if it matches an alias
-    const currentDraft = draft();
-    if (currentDraft.trim().length === 0) {
-      return null;
-    }
+  const aliasMatch: Accessor<AliasMatch | null> = createMemo(
+    on(
+      () => draft(),
+      () => {
+        // Every time draft changes, check if it matches an alias
+        const currentDraft = draft();
+        if (currentDraft.trim().length === 0) {
+          return null;
+        }
 
-    console.log("checking mach");
-    const match = aliasMatcher()?.match(currentDraft);
-    return match;
-  });
+        const match = aliasMatcher()?.match(currentDraft);
+        console.log("checking mach", match);
+        return match;
+      },
+    ),
+  );
 
   createEffect(
     on(

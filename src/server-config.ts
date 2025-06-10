@@ -1,4 +1,4 @@
-import type { ServerConfig } from "./store";
+import type { ServerConfig } from "./model/types";
 import yaml, { YAMLException } from "js-yaml";
 import { z } from "zod/v4-mini";
 import { AliasMatcher } from "./alias";

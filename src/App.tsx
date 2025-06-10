@@ -1,6 +1,6 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.scss";
-import { useStore } from "./store";
+import { useStore } from "./model";
 import { Button, Container, Navbar, Offcanvas } from "solid-bootstrap";
 import { Sidebar } from "./components/Sidebar";
 import { For, lazy, Match, Show, Switch } from "solid-js";
