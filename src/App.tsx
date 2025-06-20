@@ -3,7 +3,7 @@ import "./App.scss";
 import { useStore } from "./model";
 import { Button, Container, Navbar, Offcanvas } from "solid-bootstrap";
 import { Sidebar } from "./components/Sidebar";
-import { For, lazy, Match, Show, Switch } from "solid-js";
+import { createEffect, For, lazy, Match, Show, Switch } from "solid-js";
 import { HomePage } from "./components/HomePage";
 import { ServerPage } from "./components/ServerPage";
 import { DebugModal } from "./components/DebugModal";
@@ -31,6 +31,18 @@ function App() {
     return state.servers.find((s) => s.id === id);
   };
 
+  // A11y: When the server selector is shown, focus the sidebar
+  createEffect(() => {
+    if (state.showServerSelector) {
+      requestAnimationFrame(() => {
+        // Wait til it's visible
+        sidebarRef.focus();
+      });
+    }
+  });
+
+  let sidebarRef: HTMLElement;
+
   return (
     <AppErrorBoundary>
       {/* For some reason, this needs to come before the modal switch section below */}
@@ -56,7 +68,7 @@ function App() {
           </Offcanvas.Title>
         </Offcanvas.Header>
         <Offcanvas.Body>
-          <Sidebar />
+          <Sidebar ref={(el) => (sidebarRef = el)} />
         </Offcanvas.Body>
       </Offcanvas>
 
@@ -94,9 +106,17 @@ function App() {
         <Navbar style={{ "flex-shrink": 0 }} class="pt-0 pb-0">
           <Container fluid>
             <Button
+              aria-expanded={state.showServerSelector}
+              aria-controls="server-sidebar"
+              aria-label="Toggle server list"
               variant="outline-primary"
               size="sm"
-              onClick={() => dispatch({ type: "show-server-selector", show: true })}
+              onClick={() =>
+                dispatch({
+                  type: "show-server-selector",
+                  show: !state.showServerSelector,
+                })
+              }
               class="me-2"
             >
               ☰ Servers
