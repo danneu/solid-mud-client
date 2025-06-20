@@ -33,7 +33,7 @@ export const ServerPage: Component<{ server: Server; visible: boolean }> = (
 
   const { navigateHistory, resetHistory } = useCommandHistory();
 
-  const { dispatch } = useStore();
+  const { dispatch, state } = useStore();
   let inputRef: HTMLInputElement | undefined;
 
   // Track scroll position changes to determine if user is at bottom
@@ -179,8 +179,15 @@ export const ServerPage: Component<{ server: Server; visible: boolean }> = (
       }
     }
 
-    // Don't clear draft, just select it
-    inputRef?.select();
+    // A11y: Selecting the input field takes focus from the aria-live log
+    if (state.screenReaderMode) {
+      // If we leave the draft intact after submit, the VoiceOver insists on reading it instead of letting "assertive" log take over.
+      // If we clear the draft, then VoiceOver wants to read the new empty input state, but assertive can take over.
+      setDraft("");
+    } else {
+      // Don't clear draft, just select it for easy edit vs re-send
+      inputRef?.select();
+    }
 
     // Only scroll to bottom if mini pane is not visible (user is already at bottom)
     // If mini pane is visible, user was reading history and shouldn't be interrupted
@@ -303,7 +310,9 @@ export const ServerPage: Component<{ server: Server; visible: boolean }> = (
         <Form onSubmit={handleSubmit}>
           <Form.Control
             type="text"
-            placeholder="Write a command and press enter"
+            autocomplete="off"
+            aria-autocomplete="none"
+            placeholder="Command input"
             ref={inputRef}
             value={draft()}
             // on uparrow

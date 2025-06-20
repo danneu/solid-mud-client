@@ -28,6 +28,9 @@ function createState(): State {
   const proxy =
     savedProxyUrl || import.meta.env.VITE_PROXY_URL || PRODUCTION_PROXY_URL;
 
+  // Load screen reader mode from localStorage, default to false
+  const screenReaderMode = LocalStorage.load("mud:screen-reader-mode") ?? false;
+
   return {
     modal: null,
     // route: { type: "home" },
@@ -35,6 +38,7 @@ function createState(): State {
     proxy,
     servers,
     showServerSelector: true,
+    screenReaderMode,
   };
 }
 

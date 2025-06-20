@@ -2,6 +2,7 @@
 
 type LocalStorageSchema = {
   "mud:proxy-url": string;
+  "mud:screen-reader-mode": boolean;
   // Add more keys here as needed with their types
   // "mud:theme": "light" | "dark";
   // "mud:settings": { volume: number; notifications: boolean };

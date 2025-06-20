@@ -122,12 +122,31 @@ function App() {
               ☰ Servers
             </Button>
             <Navbar.Brand class="me-auto">solid-mud-client</Navbar.Brand>
-            <Navbar.Text>
+            <div class="form-check form-switch me-3">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                role="switch"
+                id="screenReaderToggle"
+                checked={state.screenReaderMode}
+                aria-checked={state.screenReaderMode}
+                aria-describedby="screenReaderHelp"
+                onChange={(e) => dispatch({ type: "set-screen-reader-mode", value: e.currentTarget.checked })}
+              />
+              <label class="form-check-label" for="screenReaderToggle">
+                Screen reader mode
+              </label>
+              <div id="screenReaderHelp" class="visually-hidden">
+                Toggle screen reader optimizations for better accessibility
+              </div>
+            </div>
+            <Navbar.Text aria-hidden={true}>
               Proxy URL: <code>{state.proxy}</code>
             </Navbar.Text>
 
             <Navbar.Text class="d-flex align-items-center">
               <Button
+                aria-label="Global configuration"
                 variant="link"
                 class="text-muted"
                 size="sm"
@@ -135,16 +154,20 @@ function App() {
                   dispatch({ type: "set-modal", modal: { type: "config" } })
                 }
               >
-                <IconGear />
+                <IconGear aria-hidden={true} />
               </Button>
 
               <a
                 href="https://github.com/danneu/solid-mud-client"
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="GitHub"
+                aria-label="View on GitHub"
               >
-                <IconGithub width="1.2rem" class="text-muted" />
+                <IconGithub
+                  width="1.2rem"
+                  class="text-muted"
+                  aria-hidden={true}
+                />
               </a>
             </Navbar.Text>
           </Container>

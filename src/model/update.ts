@@ -181,6 +181,11 @@ export function update(state: State, msg: Msg): void {
       state.showServerSelector = msg.show;
       break;
     }
+    case "set-screen-reader-mode": {
+      state.screenReaderMode = msg.value;
+      LocalStorage.save("mud:screen-reader-mode", msg.value);
+      break;
+    }
     default: {
       const _exhaustive: never = msg;
       throw new Error(`Unknown message type: ${_exhaustive}`);

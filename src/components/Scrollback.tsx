@@ -13,7 +13,9 @@ import { ShowChunk } from "./ShowChunk";
 import { type Server } from "../model/types";
 import { toArray as ringToArray } from "../util/RingBuffer";
 import { scrollToBottom } from "../util/scrollToBottom";
+import { type Line } from "../model/types";
 import styles from "./Scrollback.module.scss";
+import { isDecorativeLine } from "../util/line";
 
 export interface ScrollbackProps {
   server: Server;
@@ -172,6 +174,11 @@ export const Scrollback: Component<ScrollbackProps> = (props) => {
   return (
     <div class={styles.scrollbackWrapper}>
       <div
+        // A11y: Read lines to user as they come in
+        // With "polite", then VoiceOver insists on constantly reading the state of the <input>
+        // With "assertive", then VoiceOver prefers to read new log messages
+        aria-live="assertive"
+        aria-label="Message log"
         class={`${styles.log} ${styles.logViewport}`}
         ref={(el) => {
           scrollContainer = el;
@@ -180,17 +187,15 @@ export const Scrollback: Component<ScrollbackProps> = (props) => {
         onScroll={handleScroll}
       >
         <For each={filteredLines()}>
-          {(line) => (
-            <div class={styles.line}>
-              <Index each={line.chunks}>
-                {(chunk) => <ShowChunk chunk={chunk()} />}
-              </Index>
-            </div>
-          )}
+          {(line) => {
+            return <ShowLine line={line} />;
+          }}
         </For>
       </div>
 
       <div
+        // A11y: The main pane is the aria-live region that already reads new lines to user
+        aria-hidden={true}
         class={`${styles.miniPane}`}
         style={{
           // mini pane is always mounted, just hidden
@@ -217,6 +222,24 @@ export const Scrollback: Component<ScrollbackProps> = (props) => {
           </For>
         </div>
       </div>
+    </div>
+  );
+};
+
+const ShowLine: Component<{ line: Line }> = (props) => {
+  const text = createMemo(() => {
+    return props.line.chunks.reduce((acc, chunk) => acc + chunk.text, "");
+  });
+
+  const decorative = createMemo(() => {
+    return isDecorativeLine(text());
+  });
+
+  return (
+    <div class={styles.line} aria-hidden={decorative()}>
+      <Index each={props.line.chunks}>
+        {(chunk) => <ShowChunk chunk={chunk()} />}
+      </Index>
     </div>
   );
 };

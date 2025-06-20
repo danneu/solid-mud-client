@@ -51,6 +51,7 @@ export type State = {
   proxy: string;
   servers: Server[];
   showServerSelector: boolean;
+  screenReaderMode: boolean;
 };
 
 export type Msg =
@@ -144,4 +145,8 @@ export type Msg =
   | {
       type: "show-server-selector";
       show: boolean;
+    }
+  | {
+      type: "set-screen-reader-mode";
+      value: boolean;
     };
